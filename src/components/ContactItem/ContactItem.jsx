@@ -1,10 +1,15 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { removeContact } from 'redux/contacts/contacts-operations';
+// import { contactsReducer } from 'redux/contacts';
 import { Modal } from 'components/Modal/Modal';
 import { IconButton } from 'components/IconButton/IconButton';
 import { ReactComponent as CloseIcon } from '../../icons/close.svg';
 import { ContactEditForm } from 'components/ContactEditModal/ContactEditForm';
+// import { removeContact } from 'redux/contacts/contacts-operations';
+
 import {
   StyledItem,
   ContactImg,
@@ -16,26 +21,25 @@ import defaultUserImg from '../../images/default.png';
 import { ReactComponent as PhoneIcon } from '../../icons/phone.svg';
 import { ReactComponent as StarIcon } from '../../icons/star.svg';
 import { ReactComponent as EditIcon } from '../../icons/edit.svg';
-import { editContact } from 'redux/contacts/contacts-slice';
+// import { editContact } from 'redux/contacts/contacts-slice';
 import { ReactComponent as DeleteIcon } from '../../icons/delete.svg';
 import { ItemIconButton } from './IconButton';
 
-export const ContactItem = ({
-  id,
-  name,
-  avatar,
-  number,
-  favorite,
-  removeContact,
-}) => {
+export const ContactItem = ({ id, name, avatar, phone, favorite }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const dispatch = useDispatch();
 
-  const onEditContactSubmit = payload => {
-    const action = editContact(payload);
-    dispatch(action);
-    toggleEditModal();
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this contact?')) {
+      dispatch(removeContact(id));
+    }
   };
+
+  // const handleEdit = payload => {
+  //   const action = editContact(payload);
+  //   dispatch(action);
+  //   toggleEditModal();
+  // };
 
   const toggleEditModal = () => {
     setShowEditModal(prevState => !prevState);
@@ -49,9 +53,9 @@ export const ContactItem = ({
             contactId={id}
             name={name}
             avatar={avatar}
-            number={number}
+            phone={phone}
             favorite={favorite}
-            onSubmit={onEditContactSubmit}
+            onSubmit={toggleEditModal}
           />
           <IconButton
             onClick={toggleEditModal}
@@ -76,7 +80,7 @@ export const ContactItem = ({
           {name}
           <TelBox>
             <PhoneIcon width="20" height="20" fill="#29668b"></PhoneIcon>
-            {number}
+            {phone}
           </TelBox>
         </Box>
         <ButtonBox>
@@ -88,7 +92,7 @@ export const ContactItem = ({
             <EditIcon width="30" height="30" fill="#38D2D2" />
           </ItemIconButton>
           <ItemIconButton
-            onClick={removeContact}
+            onClick={handleDelete}
             type="button"
             aria-label="Remove contact"
           >
@@ -101,8 +105,10 @@ export const ContactItem = ({
 };
 
 ContactItem.propTypes = {
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
+  phone: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   favorite: PropTypes.bool,
+  createdAt: PropTypes.string,
 };

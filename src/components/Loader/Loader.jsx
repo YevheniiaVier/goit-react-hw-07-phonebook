@@ -1,9 +1,9 @@
 import { ThreeDots } from 'react-loader-spinner';
-import { Box } from 'pages/NotExistingPage/NotExistingPage.styled.';
+// import { Box } from 'pages/NotExistingPage/NotExistingPage.styled.';
 
 export const Loader = () => {
   return (
-    <Box>
+    <>
       <ThreeDots
         height="80"
         width="80"
@@ -14,6 +14,6 @@ export const Loader = () => {
         wrapperClassName=""
         visible={true}
       />
-    </Box>
+    </>
   );
 };

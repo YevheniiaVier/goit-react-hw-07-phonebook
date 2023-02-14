@@ -1,6 +1,6 @@
 export const initialState = {
   name: '',
-  number: '',
+  phone: '',
   avatar: '',
   favorite: false,
 };

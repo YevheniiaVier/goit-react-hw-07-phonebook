@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import shortid from 'shortid';
-
+import { useDispatch } from 'react-redux';
 import { ModalButton } from './Button';
 import { Checkbox } from 'components/ContactForm/Checkbox/Checkbox';
+import { editContact } from 'redux/contacts/contacts-operations';
 import {
   StyledForm,
   StyledInput,
@@ -15,15 +16,15 @@ export const ContactEditForm = ({
   contactId,
   name,
   avatar,
-  number,
+  phone,
   favorite,
   onSubmit,
 }) => {
-  const initialState = { id: contactId, name, avatar, number, favorite };
+  const initialState = { id: contactId, name, avatar, phone, favorite };
   const [contact, setContact] = useState({
     ...initialState,
   });
-
+  const dispatch = useDispatch();
   const nameInputId = shortid.generate();
   const telInputId = shortid.generate();
   const imgInputId = shortid.generate();
@@ -39,7 +40,8 @@ export const ContactEditForm = ({
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({ ...contact });
+    dispatch(editContact(contact));
+    onSubmit();
     setContact({ ...initialState });
   };
 
@@ -54,7 +56,7 @@ export const ContactEditForm = ({
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
           onChange={handleChange}
-          onSubmit={onSubmit}
+          // onSubmit={onSubmit}
           id={nameInputId}
           placeholder=" "
         />
@@ -62,9 +64,9 @@ export const ContactEditForm = ({
       </Box>
       <Box>
         <StyledInput
-          value={contact.number}
+          value={contact.phone}
           type="tel"
-          name="number"
+          name="phone"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
@@ -106,7 +108,7 @@ ContactEditForm.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
       avatar: PropTypes.string,
       favorite: PropTypes.bool,
     })

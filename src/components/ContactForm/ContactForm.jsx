@@ -1,10 +1,12 @@
 import { initialState } from './initialState';
-
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import shortid from 'shortid';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+
+import { addContact } from 'redux/contacts/contacts-operations';
 import { Checkbox } from './Checkbox/Checkbox';
 import { Button } from './Button';
 import {
@@ -14,11 +16,12 @@ import {
   Box,
 } from './ContactForm.styled';
 
-const notify = text =>
-  toast.error(text, { theme: 'colored', pauseOnHover: true });
+// const notify = text =>
+//   toast.error(text, { theme: 'colored', pauseOnHover: true });
 
-export const ContactForm = ({ actualContacts, onSubmit }) => {
+export const ContactForm = ({ onSubmit }) => {
   const [state, setState] = useState({ ...initialState });
+  const dispatch = useDispatch();
 
   const nameInputId = shortid.generate();
   const telInputId = shortid.generate();
@@ -35,21 +38,22 @@ export const ContactForm = ({ actualContacts, onSubmit }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    const { elements } = e.currentTarget;
+    // const { elements } = e.currentTarget;
+    console.log(state);
+    dispatch(addContact(state));
+    // if (actualContacts.find(contact => elements.name.value === contact.name)) {
+    //   return notify(`${elements.name.value} is already in contacts`);
+    // }
 
-    if (actualContacts.find(contact => elements.name.value === contact.name)) {
-      return notify(`${elements.name.value} is already in contacts`);
-    }
-
-    const foundNumber = actualContacts.find(
-      contact => elements.number.value === contact.number
-    );
-    if (foundNumber) {
-      return notify(
-        `${elements.number.value} is already belong to ${foundNumber.name}`
-      );
-    }
-    onSubmit({ ...state });
+    // const foundNumber = actualContacts.find(
+    //   contact => elements.phone.value === contact.phone
+    // );
+    // if (foundNumber) {
+    //   return notify(
+    //     `${elements.phone.value} is already belong to ${foundNumber.name}`
+    //   );
+    // }
+    onSubmit();
     setState({ ...initialState });
   };
 
@@ -58,6 +62,7 @@ export const ContactForm = ({ actualContacts, onSubmit }) => {
       <Box>
         <StyledInput
           type="text"
+          value={state.name}
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
@@ -71,7 +76,8 @@ export const ContactForm = ({ actualContacts, onSubmit }) => {
       <Box>
         <StyledInput
           type="tel"
-          name="number"
+          value={state.phone}
+          name="phone"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
@@ -83,6 +89,7 @@ export const ContactForm = ({ actualContacts, onSubmit }) => {
       </Box>
       <Box>
         <StyledInput
+          value={state.avatar}
           type="url"
           name="avatar"
           id={imgInputId}
@@ -99,22 +106,14 @@ export const ContactForm = ({ actualContacts, onSubmit }) => {
         name="favorite"
         onChange={handleChange}
         isChecked={state.favorite}
+        value={state.favorite}
       />
       <Button text="Add contact" type="submit" active={false} />
-      <ToastContainer autoClose={2000} />
+      {/* <ToastContainer autoClose={2000} /> */}
     </StyledForm>
   );
 };
 
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  actualContacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-      avatar: PropTypes.string,
-      favorite: PropTypes.bool,
-    })
-  ),
 };
