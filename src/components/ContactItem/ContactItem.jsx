@@ -3,12 +3,11 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { removeContact } from 'redux/contacts/contacts-operations';
-// import { contactsReducer } from 'redux/contacts';
+
 import { Modal } from 'components/Modal/Modal';
 import { IconButton } from 'components/IconButton/IconButton';
 import { ReactComponent as CloseIcon } from '../../icons/close.svg';
 import { ContactEditForm } from 'components/ContactEditModal/ContactEditForm';
-// import { removeContact } from 'redux/contacts/contacts-operations';
 
 import {
   StyledItem,
@@ -21,7 +20,6 @@ import defaultUserImg from '../../images/default.png';
 import { ReactComponent as PhoneIcon } from '../../icons/phone.svg';
 import { ReactComponent as StarIcon } from '../../icons/star.svg';
 import { ReactComponent as EditIcon } from '../../icons/edit.svg';
-// import { editContact } from 'redux/contacts/contacts-slice';
 import { ReactComponent as DeleteIcon } from '../../icons/delete.svg';
 import { ItemIconButton } from './IconButton';
 
@@ -30,16 +28,10 @@ export const ContactItem = ({ id, name, avatar, phone, favorite }) => {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this contact?')) {
+    if (window.confirm('Are you sure you want to remove this contact?')) {
       dispatch(removeContact(id));
     }
   };
-
-  // const handleEdit = payload => {
-  //   const action = editContact(payload);
-  //   dispatch(action);
-  //   toggleEditModal();
-  // };
 
   const toggleEditModal = () => {
     setShowEditModal(prevState => !prevState);

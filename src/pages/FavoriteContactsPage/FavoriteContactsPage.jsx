@@ -1,12 +1,18 @@
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+
 import { Box } from './FavoriteContactsPage.styled';
-import { contactsSelectors } from 'redux/contacts';
+import { selectors, operations } from 'redux/contacts';
 import { ContactList } from 'components/ContactList/ContactList';
 
 const FavoriteContactsPage = () => {
-  const contacts = useSelector(contactsSelectors.getFavoriteContacts);
-  console.log(contacts);
+  const contacts = useSelector(selectors.selectFavoriteContacts);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(operations.fetchContacts());
+  }, [dispatch]);
 
   return (
     <Box>

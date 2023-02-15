@@ -1,18 +1,16 @@
-export const getContacts = ({ contacts }) => {
-  // console.log(contacts);
+export const selectContacts = ({ contacts }) => {
   return contacts.items;
 };
-export const getIsLoading = state => state.contacts.isLoading;
-export const getError = state => state.contacts.error;
+export const selectIsLoading = state => state.contacts.isLoading;
+export const selectError = state => state.contacts.error;
 
-export const getFavoriteContacts = ({ contacts }) => {
+export const selectFavoriteContacts = ({ contacts }) => {
   const favoriteContacts = contacts.items.filter(({ favorite }) => favorite);
   return favoriteContacts;
 };
 
-export const getFilteredContacts = ({ contacts, filter }) => {
+export const selectFilteredContacts = ({ contacts, filter }) => {
   const normalizedFilter = filter.toLowerCase();
-  // console.log('filter', contacts);
   const filteredContacts = contacts.items.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
   );

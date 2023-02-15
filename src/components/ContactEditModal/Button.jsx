@@ -17,7 +17,7 @@ export const ModalButton = ({ text, type, active, onClick, disabled }) => {
 
 ModalButton.propTypes = {
   text: PropTypes.string,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   active: PropTypes.bool,
   onClick: PropTypes.func,
   disabled: PropTypes.bool,

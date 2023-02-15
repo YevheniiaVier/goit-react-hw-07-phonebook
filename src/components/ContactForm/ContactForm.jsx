@@ -1,12 +1,12 @@
-import { initialState } from './initialState';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import shortid from 'shortid';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { addContact } from 'redux/contacts/contacts-operations';
+import { initialState } from './initialState';
+import { selectors, operations } from 'redux/contacts';
 import { Checkbox } from './Checkbox/Checkbox';
 import { Button } from './Button';
 import {
@@ -16,12 +16,13 @@ import {
   Box,
 } from './ContactForm.styled';
 
-// const notify = text =>
-//   toast.error(text, { theme: 'colored', pauseOnHover: true });
+const notify = text =>
+  toast.error(text, { theme: 'colored', pauseOnHover: true });
 
 export const ContactForm = ({ onSubmit }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
+  const contacts = useSelector(selectors.selectContacts);
 
   const nameInputId = shortid.generate();
   const telInputId = shortid.generate();
@@ -38,21 +39,24 @@ export const ContactForm = ({ onSubmit }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    // const { elements } = e.currentTarget;
-    console.log(state);
-    dispatch(addContact(state));
-    // if (actualContacts.find(contact => elements.name.value === contact.name)) {
-    //   return notify(`${elements.name.value} is already in contacts`);
-    // }
+    const { elements } = e.currentTarget;
+    const normalizedName = elements.name.value.toLowerCase();
+    const normalizedPhone = elements.phone.value.toLowerCase();
+    if (
+      contacts.find(contact => normalizedName === contact.name.toLowerCase())
+    ) {
+      return notify(`${elements.name.value} is already in contacts`);
+    }
 
-    // const foundNumber = actualContacts.find(
-    //   contact => elements.phone.value === contact.phone
-    // );
-    // if (foundNumber) {
-    //   return notify(
-    //     `${elements.phone.value} is already belong to ${foundNumber.name}`
-    //   );
-    // }
+    const foundNumber = contacts.find(
+      contact => normalizedPhone === contact.phone.toLowerCase()
+    );
+    if (foundNumber) {
+      return notify(
+        `${elements.phone.value} is already belong to ${foundNumber.name}`
+      );
+    }
+    dispatch(operations.addContact(state));
     onSubmit();
     setState({ ...initialState });
   };
@@ -109,7 +113,7 @@ export const ContactForm = ({ onSubmit }) => {
         value={state.favorite}
       />
       <Button text="Add contact" type="submit" active={false} />
-      {/* <ToastContainer autoClose={2000} /> */}
+      <ToastContainer autoClose={2000} />
     </StyledForm>
   );
 };
@@ -117,3 +121,19 @@ export const ContactForm = ({ onSubmit }) => {
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
+
+// const isDuplicate = ({ name, phone }, contacts) => {
+//   const normalizedName = name.value.toLowerCase();
+//   const normalizedPhone = phone.value.toLowerCase();
+
+//   if (contacts.find(contact => normalizedName === contact.name.toLowerCase())) {
+//     return notify(`${name.value} is already in contacts`);
+//   }
+
+//   const foundNumber = contacts.find(
+//     contact => normalizedPhone === contact.phone.toLowerCase()
+//   );
+//   if (foundNumber) {
+//     return notify(`${phone.value} is already belong to ${foundNumber.name}`);
+//   }
+// };
